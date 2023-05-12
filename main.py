@@ -17,8 +17,8 @@ from googletrans import Translator
 
 API_TOKEN = '5993319262:AAEcaxFhaKUA-rWrGIjR6F1cSYAtJPj9sHA'
 
-admin = 708006401
-admin1 = 276491503
+
+admin = 276491503
 logging.basicConfig(level=logging.INFO)
 
 
@@ -58,7 +58,7 @@ async def send_welcome(message: types.Message):
 async def choose_lang(message: types.Message):
     chat_id = message.chat.id
     from_user_id = message.from_user.id
-    admin = '708006401'
+    admin = '276491503'
     test = db.select_main(admin)
     uzb_text = test[5]
     ru_text = test[6]
@@ -71,7 +71,7 @@ async def choose_lang(message: types.Message):
             text = "*Мир вам Курьер Vp Express доставит груз в течение 5 дней - 12 дней после прибытия на наш склад. Почему вы работаете с нами?\n\n1. Вежливость\n2. 24/7 к вашим услугам и новости, подсказывающие, в какие дни бить и не бить\n3. Получайте бонусы и скидки\n4. 100% ответственность за каждое поступление товара на склад\n5. Хорошее качество и быстрая доставка по низкой цене *"
             text_1 = f"*{ru_text}*"
     db.update_lang(lang, from_user_id)
-    admin = '708006401'
+    admin = '276491503'
     image = db.select_video(admin)
     for i in image:
         try:
@@ -208,7 +208,7 @@ async def reaction_to_video(message: types.Message):
 async def step_1(msg:types.Message,state:FSMContext):
     text_desc = msg.text
     text = '*finish ✅*'
-    admin = '708006401'
+    admin = '276491503'
     db.update_text(text_desc,admin)
     rest = translator.translate(text_desc, dest="ru")
     russ_text = rest.text
