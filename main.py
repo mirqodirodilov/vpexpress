@@ -15,7 +15,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from googletrans import Translator
 from clyent_info import *
 from openpyxl import load_workbook
-import pandas as pd
+
 
 
 
