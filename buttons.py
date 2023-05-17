@@ -33,7 +33,8 @@ def main_nopka(lang):
 		contact = "Bizning raqamlar"
 		price = 'Narxlar'
 		otchot = 'Foto malumotlar'
-		menu = 'Bosh menu'
+		shtrix = "Tovarni ko'rish"
+		errror = "Xatoliklarni to'g'irlash"
 		back = 'ortga'
 	else:
 		place = "Наш адрес 📍"
@@ -41,7 +42,8 @@ def main_nopka(lang):
 		contact = "Наши номера"
 		price = 'Цены'
 		otchot = 'Фото отчет'
-		menu = 'Главное меню'
+		shtrix = "Посмотреть продукт"
+		errror = "Исправить ошибки"
 		back = 'назад'
 
 	btn1 = KeyboardButton(place)
@@ -49,11 +51,16 @@ def main_nopka(lang):
 	btn3 = KeyboardButton(contact)
 	btn4 = KeyboardButton(price)
 	btn5 = KeyboardButton(back)
-	btn6 = KeyboardButton(menu)
 	btn7 = KeyboardButton(otchot)
-	markup.add(btn1,btn2,btn3,btn4,btn7)
-	markup.row(btn5,btn6) 
+	btn8 = KeyboardButton(shtrix)
+	btn9 = KeyboardButton(errror)
+	markup.row(btn1,btn2)
+	markup.row(btn3,btn4) 
+	markup.row(btn7,btn8) 
+	markup.row(btn5,btn9) 
 	return markup
+
+
 	
 
 country = ReplyKeyboardMarkup(
@@ -76,3 +83,5 @@ def t(lang):
 		],
 	)
 	return uztext
+
+

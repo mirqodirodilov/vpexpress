@@ -40,6 +40,18 @@ class Tablitsa:
         self.execute(sql, commit=True)
 
 
+    def create_client(self):
+        sql = """CREATE TABLE IF NOT EXISTS clients(
+        id integer PRIMARY KEY,
+        A Text,
+        B Text,
+        C Text,
+        D Text
+        )"""
+        self.execute(sql, commit=True)
+
+
+
     def update_lang(self, lang, user_id):
         sql = '''UPDATE users SET lang = ? WHERE user_id = ?'''
         self.execute(sql, parameters=(lang, user_id), commit=True)
@@ -81,3 +93,15 @@ class Tablitsa:
     def select_main(self,admin):
     	sql = '''SELECT * FROM users WHERE user_id = ?'''
     	return self.execute(sql,parameters=(admin,),fetchone=True)
+
+        ##############################################################################BAZA EXCEL
+
+    def insert_db_A(self,A):
+        sql = '''INSERT INTO clients (A) VALUES (?)'''
+        return self.execute(sql,parameters=(A,))
+
+
+
+    def select_clients(self,shtrix):
+        sql = '''SELECT * FROM clients WHERE A = ?'''
+        return self.execute(sql,parameters=(shtrix,),fetchone=True)
