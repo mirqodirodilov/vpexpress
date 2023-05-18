@@ -74,7 +74,7 @@ def t(lang):
 	uztext = InlineKeyboardMarkup(
 		inline_keyboard =[
 			[
-				InlineKeyboardButton(text='https://t.me/vpexspressotchet',url='https://t.me/vpexspressotchet'),
+				InlineKeyboardButton(text='https://t.me/exspressotchet',url='https://t.me/exspressotchet'),
 			],
 
 		],
