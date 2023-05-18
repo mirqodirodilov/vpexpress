@@ -30,7 +30,6 @@ def main_nopka(lang):
 	if lang == "uz":
 		place = "Bizning Manzil 📍"
 		id_number = "ID raqam olish"
-		contact = "Bizning raqamlar"
 		price = 'Narxlar'
 		otchot = 'Foto malumotlar'
 		shtrix = "Tovarni ko'rish"
@@ -39,7 +38,6 @@ def main_nopka(lang):
 	else:
 		place = "Наш адрес 📍"
 		id_number = "получить ID номер"
-		contact = "Наши номера"
 		price = 'Цены'
 		otchot = 'Фото отчет'
 		shtrix = "Посмотреть продукт"
@@ -48,16 +46,15 @@ def main_nopka(lang):
 
 	btn1 = KeyboardButton(place)
 	btn2 = KeyboardButton(id_number)
-	btn3 = KeyboardButton(contact)
 	btn4 = KeyboardButton(price)
 	btn5 = KeyboardButton(back)
 	btn7 = KeyboardButton(otchot)
 	btn8 = KeyboardButton(shtrix)
 	btn9 = KeyboardButton(errror)
 	markup.row(btn1,btn2)
-	markup.row(btn3,btn4) 
-	markup.row(btn7,btn8) 
-	markup.row(btn5,btn9) 
+	markup.row(btn4,btn8) 
+	markup.row(btn7,btn9) 
+	markup.row(btn5) 
 	return markup
 
 

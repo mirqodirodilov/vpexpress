@@ -100,28 +100,12 @@ async def send_id_number(message: types.Message):
     lang = db.select_lang(from_user_id)[0]
 
     if lang == "uz":
-        text = "*ID raqam olish uchun sizdan kerak boladigan hujjatlar📄❗\n\n1.Pasport ✅\n2.Doim aloqada boladigan raqam ✅\n3.Mahsulotni yetkazib berish uchun yashash manzilingiz✅\n\nID raqam olish uchun @vpexspress_admin ga malumotlarni yuboring va sizga ID raqam beriladi ✅*"
+        text = "*ID raqam olish uchun sizdan kerak boladigan hujjatlar📄❗\n\n1.Pasport ✅\n2.Doim aloqada boladigan raqam ✅\n3.Mahsulotni yetkazib berish uchun yashash manzilingiz✅\n\nID raqam olish uchun admin yoki managerga malumotlarni yuboring va sizga ID raqam beriladi ✅*"
     elif lang == 'ru':
-        text = "*Документы необходимые для получения идентификационного номера📄❗\n\n1.Паспортный ✅\n2. Номер, с которым вы поддерживаете связь ✅\n3.Место проживание ✅\n\nОтправьте свои данные на @vpexspress_admin, чтобы получить идентификационный номер, и вам будет присвоен идентификационный номер.✅*"
+        text = "*Документы необходимые для получения идентификационного номера📄❗\n\n1.Паспортный ✅\n2. Номер, с которым вы поддерживаете связь ✅\n3.Место проживание ✅\n\nОтправьте информацию администратору или менеджеру, чтобы получить идентификационный номер, и вам будет присвоен идентификационный номер.✅*"
 
     await message.answer(text, parse_mode='markdown')
 
-
-
-
-################################################################################## TEL RAQAM
-
-@dp.message_handler(lambda message: message.text in ['Наши номера', 'Bizning raqamlar'])
-async def send_id_number(message: types.Message):
-    from_user_id = message.from_user.id
-    lang = db.select_lang(from_user_id)[0]
-
-    if lang == "uz":
-        text = "*Telegram kanalimiz: https://t.me/vpexspres\nAdmin: @vpexspress_admin\nAdmin: +998 99 937 88 77\nManager: @vpexspress_manager\nManager: +998 97 783 22 44\nFoto-hisobotlar: https://t.me/vpexspressotchet*"
-    elif lang == 'ru':
-        text = "*Наш Telegram-канал: https://t.me/vpexspres\nАдминистратор: @vpexspress_admin \nAdmin: +998 99 937 88 77\nManager: @vpexspress_manager\nManager: +998 97 783 22 44 \nфото отчет: https://t.me/vpexspressotchet*"
-
-    await message.answer(text, parse_mode='markdown')
 
 ########################################################################################### PRICE
 @dp.message_handler(lambda message: message.text in ['Цены', 'Narxlar'])
