@@ -230,10 +230,10 @@ async def step_1(message:types.Message,state:FSMContext):
 
     try:
         if lang == 'uz':
-            await message.answer(f"*N° {clients[0]}\ntrack raqam {clients[1]}\nmahsulot {clients[2]}\nmahsulot soni {clients[3]}\n*",parse_mode='markdown')
+            await message.answer(f"*N° {clients[0]}\ntrack raqam {clients[1]}\nmahsulot {clients[2]}\nmahsulot soni {clients[4]}\nkod: {clients[3]}*",parse_mode='markdown')
             await state.finish()
         elif lang == 'ru':
-            await message.answer(f"*N° {clients[0]}\ntrack номер  {clients[1]}\nпродукт {clients[2]}\nколичество продуктов {clients[3]}\n*",parse_mode='markdown')
+            await message.answer(f"*N° {clients[0]}\ntrack номер  {clients[1]}\nпродукт {clients[2]}\nколичество продуктов {clients[4]}\nкод: {clients[3]}*",parse_mode='markdown')
         await state.finish()
     except:
         await message.answer('*error*',parse_mode='markdown')
