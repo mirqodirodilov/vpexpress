@@ -144,10 +144,10 @@ async def send_id_number(message: types.Message):
     lang = db.select_lang(from_user_id)[0]
 
     if lang == "uz":
-        text = "*Bizning manzil 📍 : 14 А Farobi ko'chasi, Tashkent*"
+        text = "*Bizning manzil 📍 : Богибустон 35А, Tashkent*"
     elif lang == 'ru':
-        text = "*Наш адрес 📍: г. Ташкент, ул. Фароби, 14 А*"
-    await bot.send_location(chat_id=from_user_id,latitude = 41.347122,longitude = 69.19991)
+        text = "*Наш адрес 📍: г. Ташкент, Богибустон 35А*"
+    await bot.send_location(chat_id=from_user_id,latitude = 41.280921,longitude = 69.242363)
     await message.answer(text=text,parse_mode='markdown')
 
 @dp.message_handler(lambda message: message.text in ['Фото отчет', 'Foto malumotlar'])
