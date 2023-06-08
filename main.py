@@ -291,7 +291,7 @@ async def handle_document(message: types.Message,state:FSMContext):
     await bot.download_file_by_id(document.file_id, file_name)
 
     book = load_workbook(filename=file_name)
-    sheet = book['Sheet2' or 'Sheet1' or 'Sheet3']
+    sheet = book['Sheet1' or 'Sheet2' or 'Sheet3']
     for i in range(1, sheet.max_row + 1):
         a = sheet['A' + str(i)].value
         b = sheet['B' + str(i)].value
