@@ -258,7 +258,7 @@ async def step_1(message:types.Message,state:FSMContext):
     from_user_id = message.from_user.id
     first_name = message.from_user.username
     lang = db.select_lang(from_user_id)[0]
-    add = -1001871139971
+    add = -1001748417821
     if lang == "uz":
         text = "*so'rov yuborildi ✅*"
     elif lang == 'ru':
