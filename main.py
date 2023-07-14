@@ -15,24 +15,14 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from googletrans import Translator
 from clyent_info import *
 from openpyxl import load_workbook
+from config import BOT_TOKEN,ADMINS
 
 
-
-
-
-
-API_TOKEN = '6162366361:AAEG3cdanJqLn2BTj82ZPGRrruk1qb1TFGI'
-
-admin = 6270800396
-admin1 = 6270800396
 logging.basicConfig(level=logging.INFO)
 
 
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot,storage=MemoryStorage())
-
-
-
 
 
 
@@ -65,8 +55,7 @@ async def send_welcome(message: types.Message):
 async def choose_lang(message: types.Message):
     chat_id = message.chat.id
     from_user_id = message.from_user.id
-    admin = '6270800396'
-    test = db.select_main(admin)
+    test = db.select_main(ADMINS)
     uzb_text = test[5]
     ru_text = test[6]
 
@@ -82,8 +71,7 @@ async def choose_lang(message: types.Message):
             text_1 = f"*{ru_text}*"
 
     db.update_lang(lang, from_user_id)
-    admin = '6270800396'
-    image = db.select_video(admin)
+    image = db.select_video(ADMINS)
     for i in image:
 
         try:
@@ -166,7 +154,7 @@ async def send_id_number(message: types.Message):
 @dp.message_handler(commands=['update_media'])
 async def send_welcome(message: types.Message):
     text = "*Rasm yoki Video jonating*"
-    await bot.send_message(chat_id=admin,text=text,parse_mode='markdown')
+    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
 
 
 
@@ -176,7 +164,7 @@ async def reaction_to_photo_video(message: types.Message):
     photo_id = message.photo[-1].file_id
     db.update_video(photo_id,user_id)
     text = "*Rasm Yuklandi ✅ Textni kiriting*"
-    await bot.send_message(chat_id=admin,text=text,parse_mode='markdown')
+    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
     await Royxat.text_desc.set()
 
 @dp.message_handler(content_types=ContentType.VIDEO,state=None)
@@ -185,7 +173,7 @@ async def reaction_to_video(message: types.Message):
     video_id = message.video.file_id
     db.update_video(video_id,user_id)
     text = "*Video Yuklandi ✅ Textni kiriting*"
-    await bot.send_message(chat_id=admin,text=text,parse_mode='markdown')
+    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
     await Royxat.text_desc.set()
 
 
@@ -194,12 +182,11 @@ async def reaction_to_video(message: types.Message):
 async def step_1(msg:types.Message,state:FSMContext):
     text_desc = msg.text
     text = '*finish ✅*'
-    admin = '6270800396'
-    db.update_text(text_desc,admin)
+    db.update_text(text_desc,ADMINS)
     rest = translator.translate(text_desc, dest="ru")
     russ_text = rest.text
-    db.update_textrus(russ_text,admin)
-    await bot.send_message(chat_id=admin,text=text,parse_mode='markdown')
+    db.update_textrus(russ_text,ADMINS)
+    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
     await state.finish()
 
 
