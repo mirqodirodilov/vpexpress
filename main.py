@@ -9,22 +9,18 @@ import asyncio
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from geopy.geocoders import Nominatim
-from aiogram.types import ContentType,Message
+from aiogram.types import ContentType, Message
 from state import *
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from googletrans import Translator
 from clyent_info import *
 from openpyxl import load_workbook
-from config import BOT_TOKEN,ADMINS
-
+from config import BOT_TOKEN, ADMINS
 
 logging.basicConfig(level=logging.INFO)
 
-
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot,storage=MemoryStorage())
-
-
+dp = Dispatcher(bot, storage=MemoryStorage())
 
 db = Tablitsa()
 translator = Translator()
@@ -41,12 +37,15 @@ async def send_welcome(message: types.Message):
     c.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     data = c.fetchone()
     if data is None:
-        c.execute("INSERT INTO users (username, user_id) VALUES (?, ?)", (username, user_id) )
+        c.execute("INSERT INTO users (username, user_id) VALUES (?, ?)", (username, user_id))
         conn.commit()
-        await message.reply(f"*Assalomu aleykum {username}\nexpressuz_botimizga Xush kelibsz ☺️\n\nTilni tanlang Выберите язык👇*",parse_mode='markdown',reply_markup=til)
+        await message.reply(
+            f"*Assalomu aleykum {username}\nexpressuz_botimizga Xush kelibsz ☺️\n\nTilni tanlang Выберите язык👇*",
+            parse_mode='markdown', reply_markup=til)
         await set_all_default_commands(bot)
     else:
-        await message.answer("*Siz ro'yxatdan o'tkansz ✅\n\nВы зарегистрированы ✅*",parse_mode='markdown',reply_markup=til)
+        await message.answer("*Siz ro'yxatdan o'tkansz ✅\n\nВы зарегистрированы ✅*", parse_mode='markdown',
+                             reply_markup=til)
         await set_all_default_commands(bot)
 
 
@@ -60,25 +59,26 @@ async def choose_lang(message: types.Message):
     ru_text = test[6]
 
     if message.text == "🇺🇿 Uzbek":
-            lang = 'uz'
-            text = "*Assalomu alaykum  Express kuryeri tovarlarni bizning omborimizga kelganidan keyin 5 kun - 12 kun ichida yetkazib beradi. Nega biz bilan ishlayapsiz?\n\n1. Xushmuomalalik\n2. 24/7 sizning xizmatingizda va yangiliklar, qaysi kunlarni mag'lub etishni va mag'lub qilmaslikni taklif qiladi\n3. Bonuslar va chegirmalar oling\n4. Omborga har bir tovar qabul qilish uchun 100% javobgarlik\n5. Arzon narxda sifatli va tez yetkazib berish*"
-            text_1 = f"*{uzb_text}*"
-
+        lang = 'uz'
+        text = "*Assalomu alaykum  Express kuryeri tovarlarni bizning omborimizga kelganidan keyin 5 kun - 12 kun ichida yetkazib beradi. Nega biz bilan ishlayapsiz?\n\n1. Xushmuomalalik\n2. 24/7 sizning xizmatingizda va yangiliklar, qaysi kunlarni mag'lub etishni va mag'lub qilmaslikni taklif qiladi\n3. Bonuslar va chegirmalar oling\n4. Omborga har bir tovar qabul qilish uchun 100% javobgarlik\n5. Arzon narxda sifatli va tez yetkazib berish*"
+        text_1 = f"*{uzb_text}*"
 
     if message.text == "🇷🇺 Русский":
-            lang = 'ru'
-            text = "*Мир вам Курьер  Express доставит груз в течение 5 дней - 12 дней после прибытия на наш склад. Почему вы работаете с нами?\n\n1. Вежливость\n2. 24/7 к вашим услугам и новости, подсказывающие, в какие дни бить и не бить\n3. Получайте бонусы и скидки\n4. 100% ответственность за каждое поступление товара на склад\n5. Хорошее качество и быстрая доставка по низкой цене *"
-            text_1 = f"*{ru_text}*"
+        lang = 'ru'
+        text = "*Мир вам Курьер  Express доставит груз в течение 5 дней - 12 дней после прибытия на наш склад. Почему вы работаете с нами?\n\n1. Вежливость\n2. 24/7 к вашим услугам и новости, подсказывающие, в какие дни бить и не бить\n3. Получайте бонусы и скидки\n4. 100% ответственность за каждое поступление товара на склад\n5. Хорошее качество и быстрая доставка по низкой цене *"
+        text_1 = f"*{ru_text}*"
 
     db.update_lang(lang, from_user_id)
     image = db.select_video(ADMINS)
     for i in image:
 
         try:
-            await message.answer(text, parse_mode='markdown',reply_markup=main_nopka(lang))
-            await message.answer_video(i,caption=text_1,parse_mode='markdown')
+            await message.answer(text, parse_mode='markdown', reply_markup=main_nopka(lang))
+            await message.answer_video(i, caption=text_1, parse_mode='markdown')
         except:
-            await message.answer_photo(i,caption=text_1,parse_mode='markdown')
+            await message.answer_photo(i, caption=text_1, parse_mode='markdown')
+
+
 ############################################################################ LANGUAGE
 
 
@@ -118,10 +118,7 @@ async def send_id_number(message: types.Message):
     elif lang == 'ru':
         text = "*Выберите язык 👇*"
 
-    await message.answer(text, parse_mode='markdown',reply_markup=til)
-
-
-
+    await message.answer(text, parse_mode='markdown', reply_markup=til)
 
 
 ############################################################################ SEND LOCATION
@@ -135,8 +132,9 @@ async def send_id_number(message: types.Message):
         text = "*Bizning manzil 📍 : Богибустон 35А, Tashkent*"
     elif lang == 'ru':
         text = "*Наш адрес 📍: г. Ташкент, Богибустон 35А*"
-    await bot.send_location(chat_id=from_user_id,latitude = 41.280921,longitude = 69.242363)
-    await message.answer(text=text,parse_mode='markdown')
+    await bot.send_location(chat_id=from_user_id, latitude=41.280921, longitude=69.242363)
+    await message.answer(text=text, parse_mode='markdown')
+
 
 @dp.message_handler(lambda message: message.text in ['Фото отчет', 'Foto malumotlar'])
 async def send_id_number(message: types.Message):
@@ -147,48 +145,45 @@ async def send_id_number(message: types.Message):
         text = "*Foto malumotlar kanalimiz*"
     elif lang == 'ru':
         text = "*Наш канал фото отчет*"
-    await message.answer(text=text,parse_mode='markdown',reply_markup=t(lang))
-
+    await message.answer(text=text, parse_mode='markdown', reply_markup=t(lang))
 
 
 @dp.message_handler(commands=['update_media'])
 async def send_welcome(message: types.Message):
     text = "*Rasm yoki Video jonating*"
-    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
+    await bot.send_message(chat_id=ADMINS, text=text, parse_mode='markdown')
 
 
-
-@dp.message_handler(content_types=ContentType.PHOTO,state=None)
+@dp.message_handler(content_types=ContentType.PHOTO, state=None)
 async def reaction_to_photo_video(message: types.Message):
     user_id = message.from_user.id
     photo_id = message.photo[-1].file_id
-    db.update_video(photo_id,user_id)
+    db.update_video(photo_id, user_id)
     text = "*Rasm Yuklandi ✅ Textni kiriting*"
-    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
+    await bot.send_message(chat_id=ADMINS, text=text, parse_mode='markdown')
     await Royxat.text_desc.set()
 
-@dp.message_handler(content_types=ContentType.VIDEO,state=None)
+
+@dp.message_handler(content_types=ContentType.VIDEO, state=None)
 async def reaction_to_video(message: types.Message):
     user_id = message.from_user.id
     video_id = message.video.file_id
-    db.update_video(video_id,user_id)
+    db.update_video(video_id, user_id)
     text = "*Video Yuklandi ✅ Textni kiriting*"
-    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
+    await bot.send_message(chat_id=ADMINS, text=text, parse_mode='markdown')
     await Royxat.text_desc.set()
 
 
-
 @dp.message_handler(state=Royxat.text_desc)
-async def step_1(msg:types.Message,state:FSMContext):
+async def step_1(msg: types.Message, state: FSMContext):
     text_desc = msg.text
     text = '*finish ✅*'
-    db.update_text(text_desc,ADMINS)
+    db.update_text(text_desc, ADMINS)
     rest = translator.translate(text_desc, dest="ru")
     russ_text = rest.text
-    db.update_textrus(russ_text,ADMINS)
-    await bot.send_message(chat_id=ADMINS,text=text,parse_mode='markdown')
+    db.update_textrus(russ_text, ADMINS)
+    await bot.send_message(chat_id=ADMINS, text=text, parse_mode='markdown')
     await state.finish()
-
 
 
 @dp.message_handler(lambda message: message.text in ['Tovarni ko\'rish', 'Посмотреть продукт'])
@@ -199,7 +194,7 @@ async def send_id_number(message: types.Message):
         text = "*shtrix kodni kiriting*"
     elif lang == 'ru':
         text = "*введите штрих-код*"
-    await message.answer(text=text,parse_mode='markdown')
+    await message.answer(text=text, parse_mode='markdown')
     await Royxat.shtrix.set()
 
 
@@ -207,7 +202,7 @@ async def send_id_number(message: types.Message):
 
 
 @dp.message_handler(state=Royxat.shtrix)
-async def step_1(message:types.Message,state:FSMContext):
+async def step_1(message: types.Message, state: FSMContext):
     from_user_id = message.from_user.id
     lang = db.select_lang(from_user_id)[0]
     shtrix = message.text
@@ -217,15 +212,18 @@ async def step_1(message:types.Message,state:FSMContext):
 
     try:
         if lang == 'uz':
-            await message.answer(f"*N° {clients[0]}\ntrack raqam {clients[1]}\nmahsulot {clients[2]}\nmahsulot soni {clients[4]}\nkod: {clients[3]}*",parse_mode='markdown')
+            await message.answer(
+                f"*N° {clients[0]}\ntrack raqam {clients[1]}\nmahsulot {clients[2]}\nmahsulot soni {clients[4]}\nkod: {clients[3]}*",
+                parse_mode='markdown')
             await state.finish()
         elif lang == 'ru':
-            await message.answer(f"*N° {clients[0]}\ntrack номер  {clients[1]}\nпродукт {clients[2]}\nколичество продуктов {clients[4]}\nкод: {clients[3]}*",parse_mode='markdown')
+            await message.answer(
+                f"*N° {clients[0]}\ntrack номер  {clients[1]}\nпродукт {clients[2]}\nколичество продуктов {clients[4]}\nкод: {clients[3]}*",
+                parse_mode='markdown')
         await state.finish()
     except:
-        await message.answer('*error*',parse_mode='markdown')
+        await message.answer('*error*', parse_mode='markdown')
     await state.finish()
-
 
 
 @dp.message_handler(lambda message: message.text in ['Xatoliklarni to\'g\'irlash', 'Исправить ошибки'])
@@ -236,12 +234,12 @@ async def send_id_number(message: types.Message):
         text = "*Xatolikni to'g'irlash uchun track codinggizni va tavarni nomini kiriting ✍️*"
     elif lang == 'ru':
         text = "*Введите трек-код и название бренда, чтобы исправить ошибку ✍️*"
-    await message.answer(text=text,parse_mode='markdown')
+    await message.answer(text=text, parse_mode='markdown')
     await Royxat.ariza.set()
 
 
 @dp.message_handler(state=Royxat.ariza)
-async def step_1(message:types.Message,state:FSMContext):
+async def step_1(message: types.Message, state: FSMContext):
     from_user_id = message.from_user.id
     first_name = message.from_user.username
     lang = db.select_lang(from_user_id)[0]
@@ -253,28 +251,29 @@ async def step_1(message:types.Message,state:FSMContext):
     ariza = message.text
     await state.update_data(
         {
-        'ariza':ariza
+            'ariza': ariza
         }
     )
-    await message.answer(f"{text} ",parse_mode='markdown')
-    await bot.send_message(chat_id=add,text=f"@{first_name}\n*so'rov kim tomonidan yuborildi* 👇\n*{ariza}*",parse_mode='markdown')
+    await message.answer(f"{text} ", parse_mode='markdown')
     await state.finish()
+    await bot.send_message(chat_id=add, text=f"@{first_name}\n*so'rov kim tomonidan yuborildi* 👇\n*{ariza}*",
+                           parse_mode='markdown')
 
 
 ##############################################################################################
 
 @dp.message_handler(commands=['update_db'])
 async def send_welcome(message: types.Message):
-    await message.answer('*excel faylni jo\'nating*',parse_mode='markdown')
+    await message.answer('*excel faylni jo\'nating*', parse_mode='markdown')
     await Royxat.db.set()
 
 
-@dp.message_handler(content_types=types.ContentType.DOCUMENT,state=Royxat.db)
-async def handle_document(message: types.Message,state:FSMContext):
+@dp.message_handler(content_types=types.ContentType.DOCUMENT, state=Royxat.db)
+async def handle_document(message: types.Message, state: FSMContext):
     conn = sqlite3.connect("china.db")
     c = conn.cursor()
     document = message.document
-    file_name = 'new_file.xlsx'  
+    file_name = 'new_file.xlsx'
     await bot.download_file_by_id(document.file_id, file_name)
 
     book = load_workbook(filename=file_name)
@@ -284,13 +283,11 @@ async def handle_document(message: types.Message,state:FSMContext):
         b = sheet['B' + str(i)].value
         cb = sheet['D' + str(i)].value
         d = sheet['C' + str(i)].value
-        c.execute("INSERT INTO clients (A,B,C,D) VALUES (?,?,?,?)",(a,b,cb,d))
+        c.execute("INSERT INTO clients (A,B,C,D) VALUES (?,?,?,?)", (a, b, cb, d))
         conn.commit()
     conn.close()
     await message.answer("added")
     await state.finish()
-
-    
 
 
 @dp.message_handler(commands=['delete_db'])
@@ -299,13 +296,8 @@ async def send_welcome(message: types.Message):
     c = conn.cursor()
     c.execute("DELETE FROM clients ")
     conn.commit()
-    await message.answer('*Malumotlar ochirildi*',parse_mode='markdown')
-
-
+    await message.answer('*Malumotlar ochirildi*', parse_mode='markdown')
 
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
-
-
-
