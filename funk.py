@@ -1,7 +1,6 @@
 import sqlite3
 
 
-
 class Tablitsa:
     def __init__(self, path_to_db="china.db"):
         self.path_to_db = path_to_db
@@ -39,7 +38,6 @@ class Tablitsa:
         )"""
         self.execute(sql, commit=True)
 
-
     def create_client(self):
         sql = """CREATE TABLE IF NOT EXISTS clients(
         id integer PRIMARY KEY,
@@ -50,58 +48,64 @@ class Tablitsa:
         )"""
         self.execute(sql, commit=True)
 
-
+    def create_products(self):
+        sql = """CREATE TABLE IF NOT EXISTS products(
+        id integer PRIMARY KEY,
+        A Text,
+        B Text
+        )"""
+        self.execute(sql, commit=True)
 
     def update_lang(self, lang, user_id):
         sql = '''UPDATE users SET lang = ? WHERE user_id = ?'''
         self.execute(sql, parameters=(lang, user_id), commit=True)
 
-
-
     def select_lang(self, user_id):
         sql = '''SELECT lang FROM users WHERE user_id = ?'''
         return self.execute(sql, parameters=(user_id,), fetchone=True)
 
+    def update_video(self, video_id, user_id):
+        sql = '''UPDATE users SET video = ? WHERE user_id = ?'''
+        self.execute(sql, parameters=(video_id, user_id), commit=True)
 
-    def update_video(self,video_id,user_id):
-    	sql = '''UPDATE users SET video = ? WHERE user_id = ?'''
-    	self.execute(sql, parameters=(video_id, user_id), commit=True)
+    def update_text(self, text_desc, admin):
+        sql = '''UPDATE users SET description = ? WHERE user_id = ?'''
+        self.execute(sql, parameters=(text_desc, admin), commit=True)
 
+    def update_textrus(self, russ_text, admin):
+        sql = '''UPDATE users SET russ = ? WHERE user_id = ?'''
+        self.execute(sql, parameters=(russ_text, admin), commit=True)
 
-    def update_text(self,text_desc,admin):
-    	sql = '''UPDATE users SET description = ? WHERE user_id = ?'''
-    	self.execute(sql, parameters=(text_desc, admin), commit=True)
+    def select_desc(self, admin):
+        sql = '''SELECT description FROM users WHERE user_id = ?'''
+        return self.execute(sql, parameters=(admin,), fetchone=True)
 
+    def select_ru_desc(self, admin):
+        sql = '''SELECT russ FROM users WHERE user_id = ?'''
+        return self.execute(sql, parameters=(admin,), fetchone=True)
 
-    def update_textrus(self,russ_text,admin):
-    	sql = '''UPDATE users SET russ = ? WHERE user_id = ?'''
-    	self.execute(sql, parameters=(russ_text, admin), commit=True)
+    def select_video(self, admin):
+        sql = '''SELECT video FROM users WHERE user_id = ?'''
+        return self.execute(sql, parameters=(admin,), fetchone=True)
 
-    def select_desc(self,admin):
-    	sql = '''SELECT description FROM users WHERE user_id = ?'''
-    	return self.execute(sql,parameters=(admin,),fetchone=True)
-
-    def select_ru_desc(self,admin):
-    	sql = '''SELECT russ FROM users WHERE user_id = ?'''
-    	return self.execute(sql,parameters=(admin,),fetchone=True)
-
-
-    def select_video(self,admin):
-    	sql = '''SELECT video FROM users WHERE user_id = ?'''
-    	return self.execute(sql, parameters=(admin,), fetchone=True)
-
-    def select_main(self,admin):
-    	sql = '''SELECT * FROM users WHERE user_id = ?'''
-    	return self.execute(sql,parameters=(admin,),fetchone=True)
+    def select_main(self, admin):
+        sql = '''SELECT * FROM users WHERE user_id = ?'''
+        return self.execute(sql, parameters=(admin,), fetchone=True)
 
         ##############################################################################BAZA EXCEL
 
-    def insert_db_A(self,A):
+    def insert_db_A(self, A):
         sql = '''INSERT INTO clients (A) VALUES (?)'''
-        return self.execute(sql,parameters=(A,))
+        return self.execute(sql, parameters=(A,))
 
-
-
-    def select_clients(self,shtrix):
+    def select_clients(self, shtrix):
         sql = '''SELECT * FROM clients WHERE A = ?'''
-        return self.execute(sql,parameters=(shtrix,),fetchone=True)
+        return self.execute(sql, parameters=(shtrix,), fetchone=True)
+
+    def select_product(self, shtrix):
+        sql = '''SELECT * FROM products WHERE A = ?'''
+        return self.execute(sql, parameters=(shtrix,), fetchone=True)
+
+    def select_all_users(self):
+        sql = '''SELECT * FROM users'''
+        return self.execute(sql, parameters=(), fetchall=True)

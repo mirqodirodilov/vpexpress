@@ -16,6 +16,7 @@ from googletrans import Translator
 from clyent_info import *
 from openpyxl import load_workbook
 from config import BOT_TOKEN, ADMINS
+from aiogram.types import BotCommand, BotCommandScopeAllChatAdministrators
 
 logging.basicConfig(level=logging.INFO)
 
@@ -34,6 +35,7 @@ async def send_welcome(message: types.Message):
     user_id = message.from_user.id
     db.create_table()
     db.create_client()
+    db.create_products()
     c.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     data = c.fetchone()
     if data is None:
@@ -71,7 +73,6 @@ async def choose_lang(message: types.Message):
     db.update_lang(lang, from_user_id)
     image = db.select_video(ADMINS)
     for i in image:
-
         try:
             await message.answer(text, parse_mode='markdown', reply_markup=main_nopka(lang))
             await message.answer_video(i, caption=text_1, parse_mode='markdown')
@@ -186,20 +187,19 @@ async def step_1(msg: types.Message, state: FSMContext):
     await state.finish()
 
 
-@dp.message_handler(lambda message: message.text in ['Tovarni ko\'rish', 'Посмотреть продукт'])
+@dp.message_handler(lambda message: message.text in ['Ombordagi Tovarlar', 'Товары которые на складе'])
 async def send_id_number(message: types.Message):
     from_user_id = message.from_user.id
     lang = db.select_lang(from_user_id)[0]
     if lang == "uz":
-        text = "*shtrix kodni kiriting*"
+        text = "*Track kodni kiriting*"
     elif lang == 'ru':
-        text = "*введите штрих-код*"
+        text = "*введите трак-код*"
     await message.answer(text=text, parse_mode='markdown')
     await Royxat.shtrix.set()
 
 
 # 9853925148774
-
 
 @dp.message_handler(state=Royxat.shtrix)
 async def step_1(message: types.Message, state: FSMContext):
@@ -208,19 +208,18 @@ async def step_1(message: types.Message, state: FSMContext):
     shtrix = message.text
     conn = sqlite3.connect('china.db')
     c = conn.cursor()
-    clients = db.select_clients(shtrix)
-
+    clients = db.select_product(shtrix)
     try:
         if lang == 'uz':
             await message.answer(
-                f"*N° {clients[0]}\ntrack raqam {clients[1]}\nmahsulot {clients[2]}\nmahsulot soni {clients[4]}\nkod: {clients[3]}*",
+                f"*N° {clients[0]}\ntrack raqam: {clients[1]}\nname: {clients[2]}\nQabul qilindi ✅ *",
                 parse_mode='markdown')
             await state.finish()
         elif lang == 'ru':
             await message.answer(
-                f"*N° {clients[0]}\ntrack номер  {clients[1]}\nпродукт {clients[2]}\nколичество продуктов {clients[4]}\nкод: {clients[3]}*",
+                f"*N° {clients[0]}\ntrack номер  {clients[1]}\nname: {clients[2]}\nПринято ✅*",
                 parse_mode='markdown')
-        await state.finish()
+            await state.finish()
     except:
         await message.answer('*error*', parse_mode='markdown')
     await state.finish()
@@ -297,6 +296,86 @@ async def send_welcome(message: types.Message):
     c.execute("DELETE FROM clients ")
     conn.commit()
     await message.answer('*Malumotlar ochirildi*', parse_mode='markdown')
+
+
+@dp.message_handler(lambda message: message.text in ['Yo\'ldagi Tovarlar', 'Товары которые в пути'])
+async def send_id_number(message: types.Message):
+    from_user_id = message.from_user.id
+    lang = db.select_lang(from_user_id)[0]
+    if lang == "uz":
+        text = "*Track raqamni kiriting ✍️*"
+    elif lang == 'ru':
+        text = "*Введите трек-номер ✍️*"
+    await message.answer(text=text, parse_mode='markdown')
+    await Royxat.product_shtrix.set()
+
+
+@dp.message_handler(state=Royxat.product_shtrix)
+async def step_1(message: types.Message, state: FSMContext):
+    from_user_id = message.from_user.id
+    lang = db.select_lang(from_user_id)[0]
+    shtrix = message.text
+    conn = sqlite3.connect('china.db')
+    c = conn.cursor()
+    clients = db.select_clients(shtrix)
+
+    try:
+        if lang == 'uz':
+            await message.answer(
+                f"*N° {clients[0]}\ntrack raqam {clients[1]}\nmahsulot {clients[2]}\nmahsulot soni {clients[4]}\nkod: {clients[3]}*",
+                parse_mode='markdown')
+            await state.finish()
+        elif lang == 'ru':
+            await message.answer(
+                f"*N° {clients[0]}\ntrack номер  {clients[1]}\nпродукт {clients[2]}\nколичество продуктов {clients[4]}\nкод: {clients[3]}*",
+                parse_mode='markdown')
+        await state.finish()
+    except:
+        await message.answer('*error*', parse_mode='markdown')
+    await state.finish()
+
+
+@dp.message_handler(commands=['update_product'])
+async def send_welcome(message: types.Message):
+    await message.answer('*excel faylni jo\'nating*', parse_mode='markdown')
+    await Royxat.product.set()
+
+
+@dp.message_handler(commands=['delete_product'])
+async def send_welcome(message: types.Message):
+    conn = sqlite3.connect('china.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM products ")
+    conn.commit()
+    await message.answer('*Malumotlar ochirildi*', parse_mode='markdown')
+
+
+@dp.message_handler(content_types=types.ContentType.DOCUMENT, state=Royxat.product)
+async def handle_document(message: types.Message, state: FSMContext):
+    conn = sqlite3.connect("china.db")
+    c = conn.cursor()
+    document = message.document
+    file_name = 'new_file.xlsx'
+    await bot.download_file_by_id(document.file_id, file_name)
+
+    book = load_workbook(filename=file_name)
+    sheet = book['Sheet1']
+    for i in range(1, sheet.max_row + 1):
+        a = sheet['A' + str(i)].value
+        b = sheet['B' + str(i)].value
+        c.execute("INSERT INTO products (A,B) VALUES (?,?)", (a, b))
+        conn.commit()
+    conn.close()
+    await message.answer("added")
+    await state.finish()
+
+
+@dp.message_handler(commands=['select_users'])
+async def send_welcome(message: types.Message):
+    users = db.select_all_users()
+    count_users = len(users)  # Foydalanuvchilar sonini hisoblash
+    message_text = f'*Foydalanuvchilar soni: {count_users}*'
+    await message.answer(message_text, parse_mode='markdown')
 
 
 if __name__ == '__main__':

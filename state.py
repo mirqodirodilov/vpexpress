@@ -7,3 +7,5 @@ class Royxat(StatesGroup):
     shtrix = State()
     ariza = State()
     db = State()
+    product = State()
+    product_shtrix = State()
