@@ -269,25 +269,27 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(content_types=types.ContentType.DOCUMENT, state=Royxat.db)
 async def handle_document(message: types.Message, state: FSMContext):
-    conn = sqlite3.connect("china.db")
-    c = conn.cursor()
-    document = message.document
-    file_name = 'new_file.xlsx'
-    await bot.download_file_by_id(document.file_id, file_name)
-
-    book = load_workbook(filename=file_name)
-    sheet = book['Sheet1']
-    for i in range(1, sheet.max_row + 1):
-        a = sheet['A' + str(i)].value
-        b = sheet['B' + str(i)].value
-        cb = sheet['D' + str(i)].value
-        d = sheet['C' + str(i)].value
-        c.execute("INSERT INTO clients (A,B,C,D) VALUES (?,?,?,?)", (a, b, cb, d))
-        conn.commit()
-    conn.close()
-    await message.answer("added")
-    await state.finish()
-
+    try:
+        conn = sqlite3.connect("china.db")
+        c = conn.cursor()
+        document = message.document
+        file_name = 'new_file.xlsx'
+        await bot.download_file_by_id(document.file_id, file_name)
+        book = load_workbook(filename=file_name)
+        sheet = book['Sheet1']
+        for i in range(1, sheet.max_row + 1):
+            a = sheet['A' + str(i)].value
+            b = sheet['B' + str(i)].value
+            cb = sheet['D' + str(i)].value
+            d = sheet['C' + str(i)].value
+            c.execute("INSERT INTO clients (A,B,C,D) VALUES (?,?,?,?)", (a, b, cb, d))
+            conn.commit()
+        conn.close()
+        await message.answer("added")
+        await state.finish()
+    except Exception:
+        await message.answer(f"*Excel faylni yuklashda qandaydir xatolik yuzberdi!\nIltimos faylni tekshirib qaytadan urinib ko'ring*",parse_mode='markdown')
+        await state.finish()
 
 @dp.message_handler(commands=['delete_db'])
 async def send_welcome(message: types.Message):
@@ -352,22 +354,26 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(content_types=types.ContentType.DOCUMENT, state=Royxat.product)
 async def handle_document(message: types.Message, state: FSMContext):
-    conn = sqlite3.connect("china.db")
-    c = conn.cursor()
-    document = message.document
-    file_name = 'new_file.xlsx'
-    await bot.download_file_by_id(document.file_id, file_name)
+    try:
+        conn = sqlite3.connect("china.db")
+        c = conn.cursor()
+        document = message.document
+        file_name = 'new_file.xlsx'
+        await bot.download_file_by_id(document.file_id, file_name)
 
-    book = load_workbook(filename=file_name)
-    sheet = book['Sheet1']
-    for i in range(1, sheet.max_row + 1):
-        a = sheet['A' + str(i)].value
-        b = sheet['B' + str(i)].value
-        c.execute("INSERT INTO products (A,B) VALUES (?,?)", (a, b))
-        conn.commit()
-    conn.close()
-    await message.answer("added")
-    await state.finish()
+        book = load_workbook(filename=file_name)
+        sheet = book['Sheet1']
+        for i in range(1, sheet.max_row + 1):
+            a = sheet['A' + str(i)].value
+            b = sheet['B' + str(i)].value
+            c.execute("INSERT INTO products (A,B) VALUES (?,?)", (a, b))
+            conn.commit()
+        conn.close()
+        await message.answer("added")
+        await state.finish()
+    except Exception:
+        await message.answer(f"*Excel faylni yuklashda qandaydir xatolik yuzberdi!\nIltimos faylni tekshirib qaytadan urinib ko'ring*",parse_mode='markdown')
+        await state.finish()
 
 
 @dp.message_handler(commands=['select_users'])

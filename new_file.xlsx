@@ -1,0 +1,59 @@
+import openpyxl
+import tkinter as tk
+from tkinter import simpledialog, filedialog
+
+# TKinter oynasini yaratish va yopish
+root = tk.Tk()
+root.withdraw()
+
+# Excel faylini ochish
+input_filename = filedialog.askopenfilename(title="Excel faylini tanlang", filetypes=[("Excel fayllari", "*.xlsx")])
+workbook = openpyxl.load_workbook(input_filename)
+
+# Yangi Excel faylini yaratish
+new_workbook = openpyxl.Workbook()
+
+# Yangi faylda bitta yangi sheet ochish
+new_sheet = new_workbook.active
+
+# Bitta sheetni tanlash
+sheet = workbook.active
+
+# Barcha qatorlarni o'qish va ma'lumotlarni to'plash
+box, passport_id, date, coast, product_kg = [], [], [], [], []
+for row in sheet.iter_rows(values_only=True, min_row=2, max_row=sheet.max_row, min_col=1, max_col=12):
+    cell_A, _, _, _, cell_E, _, _, _, _, _, cell_K, cell_L, *_ = row
+    if cell_A is not None and cell_E is not None and cell_K is not None and cell_L is not None:
+        cell_E_0 = cell_E.replace(',', '.')
+        cell_E_1 = cell_E_0.replace('/', ', ').split()
+        box.append(cell_A)
+        passport_id.append(cell_E_1[0])
+        date.append(cell_E_1[1])
+        product_kg.append(cell_K)
+        coast.append(cell_L)
+
+# Foydalanuvchidan columnlarni kiriting
+input_column_passport = int(simpledialog.askstring("Column", "Qaysi columnlarni malumotlarni saqlaysiz Passport: "))
+input_column_user_date = int(simpledialog.askstring("Column", "Qaysi columnlarni malumotlarni saqlaysiz user date: "))
+input_column_product_kg = int(simpledialog.askstring("Column", "Qaysi columnlarni malumotlarni saqlaysiz Product_kg: "))
+input_column_coast = int(simpledialog.askstring("Column", "Qaysi columnlarni malumotlarni saqlaysiz Narx: "))
+
+# Ma'lumotlarni yangi faylga yozish
+for i in range(len(box)):
+    new_sheet.cell(row=i + 2, column=1, value=box[i])
+    new_sheet.cell(row=i + 2, column=input_column_passport, value=passport_id[i])
+    new_sheet.cell(row=i + 2, column=input_column_user_date, value=date[i])
+    new_sheet.cell(row=i + 2, column=input_column_product_kg, value=product_kg[i])
+    new_sheet.cell(row=i + 2, column=input_column_coast, value=coast[i])
+
+# Yangi faylni saqlash va faylni tanlash oynasini yopish
+new_filename = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel fayllari", "*.xlsx")])
+if new_filename:
+    new_workbook.save(new_filename)
+    new_workbook.close()
+    workbook.close()
+else:
+    new_workbook.close()
+
+# TKinter oynasini osongina yopish
+root.destroy()
