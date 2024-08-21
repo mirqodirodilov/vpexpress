@@ -103,9 +103,9 @@ async def send_id_number(message: types.Message):
     lang = db.select_lang(from_user_id)[0]
 
     if lang == "uz":
-        text = "*1.Yuklar narxi 11$ dan xech qanday minimalkalarsiz *"
+        text = "*1.Yuklar narxi 10.5$ dan xech qanday minimalkalarsiz *"
     elif lang == 'ru':
-        text = "*1.Стоимость доставки начинается от 11$ долларов без минимума.*"
+        text = "*1.Стоимость доставки начинается от 10.5$ долларов без минимума.*"
     await message.answer(text, parse_mode='markdown')
 
 
